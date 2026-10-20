@@ -1,6 +1,8 @@
 from datetime import date
 from pathlib import Path
 
+import pytest
+
 
 def test_create_athlete_returns_201_with_category(client):
     birth_date = date(date.today().year - 30, 3, 2)
@@ -73,6 +75,75 @@ def test_list_athletes_filters_by_club(client, make_athlete):
 
     assert response.status_code == 200
     assert [a["last_name"] for a in response.json()] == ["Durand"]
+
+
+def test_list_athletes_defaults_to_first_50(client, make_athlete):
+    for i in range(51):
+        make_athlete(f"Nom{i:02d}")
+
+    response = client.get("/athletes")
+
+    assert response.status_code == 200
+    names = [a["last_name"] for a in response.json()]
+    assert len(names) == 50
+    assert names[0] == "Nom00"
+    assert names[-1] == "Nom49"
+
+
+def test_list_athletes_applies_limit_and_offset(client, make_athlete):
+    for i in range(5):
+        make_athlete(f"Nom{i}")
+
+    response = client.get("/athletes", params={"limit": 2, "offset": 1})
+
+    assert response.status_code == 200
+    assert [a["last_name"] for a in response.json()] == ["Nom1", "Nom2"]
+
+
+def test_list_athletes_offset_past_end_returns_empty_list(client, make_athlete):
+    make_athlete("Durand")
+
+    response = client.get("/athletes", params={"offset": 10})
+
+    assert response.status_code == 200
+    assert response.json() == []
+
+
+def test_list_athletes_accepts_bounds(client, make_athlete):
+    make_athlete("Durand")
+
+    for params in ({"limit": 1}, {"limit": 100}, {"offset": 0}):
+        response = client.get("/athletes", params=params)
+        assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "params",
+    [
+        {"limit": 0},
+        {"limit": 101},
+        {"limit": "abc"},
+        {"offset": -1},
+        {"offset": "abc"},
+    ],
+)
+def test_list_athletes_out_of_bounds_returns_422(client, params):
+    response = client.get("/athletes", params=params)
+
+    assert response.status_code == 422
+
+
+def test_list_athletes_applies_pagination_after_club_filter(client, make_athlete):
+    for i in range(6):
+        make_athlete(f"Ac{i}", club="AC Rivebelle")
+        make_athlete(f"Autre{i}", club="Stade Nordval")
+
+    response = client.get("/athletes", params={"club": "AC Rivebelle", "limit": 2, "offset": 2})
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [a["last_name"] for a in body] == ["Ac2", "Ac3"]
+    assert {a["club"] for a in body} == {"AC Rivebelle"}
 
 
 CSV_EXEMPLE = Path(__file__).parent.parent / "scripts" / "legacy" / "licencies_exemple.csv"

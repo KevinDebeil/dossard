@@ -53,13 +53,16 @@ def _to_athlete(row: sqlite3.Row) -> AthleteOut:
     )
 
 
-def list_athletes(conn: sqlite3.Connection, club: str | None = None) -> list[AthleteOut]:
+def list_athletes(
+    conn: sqlite3.Connection, club: str | None = None, limit: int = 50, offset: int = 0
+) -> list[AthleteOut]:
     sql = "SELECT * FROM athletes"
-    params: tuple[str, ...] = ()
+    params: list[str | int] = []
     if club is not None:
         sql += " WHERE club = ?"
-        params = (club,)
-    sql += " ORDER BY last_name, first_name, id"
+        params.append(club)
+    sql += " ORDER BY last_name, first_name, id LIMIT ? OFFSET ?"
+    params.extend((limit, offset))
     return [_to_athlete(row) for row in conn.execute(sql, params)]
 
 
