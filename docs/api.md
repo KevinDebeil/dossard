@@ -16,7 +16,7 @@ Toutes les erreurs métier renvoient :
 | `not_found` | 404 | ressource introuvable |
 | `conflict` | 409 | doublon (licence, inscription déjà active) |
 | `invalid_transition` | 409 | changement de statut non permis |
-| `registrations_closed` | 409 | compétition non ouverte aux inscriptions |
+| `registration_closed` | 409 | compétition non ouverte aux inscriptions |
 | `category_mismatch` | 409 | catégorie de l'athlète différente de celle de l'épreuve |
 | `medical_certificate_invalid` | 409 | certificat absent ou expiré à la date de la compétition |
 | `results_not_allowed` | 409 | résultat sur une inscription non confirmée ou une compétition non close |
