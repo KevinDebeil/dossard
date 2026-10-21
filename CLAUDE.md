@@ -36,3 +36,7 @@ Dossard : API FastAPI + SQLite (`sqlite3`, sans ORM). Code et docs en français.
 
 - Toute route ajoutée ou modifiée : une ligne dans `docs/api.md`.
 - Et une entrée en tête de `CHANGELOG.md`, section « Non publié » (créer le fichier s'il n'existe pas).
+
+## Revue en CI
+
+Toute revue de pull request faite en CI se termine par la ligne exacte `Revue CI — relu par Claude`.
