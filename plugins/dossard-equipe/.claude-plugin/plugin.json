@@ -1,0 +1,6 @@
+{
+  "name": "dossard-equipe",
+  "description": "Outils d'équipe pour Dossard : conventions d'API, garde-fous et formatage par hooks, accès MCP en lecture seule.",
+  "version": "1.0.0",
+  "author": { "name": "Équipe dossard" }
+}

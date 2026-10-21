@@ -14,3 +14,7 @@ data/*.db-journal
 CLAUDE.local.md
 .claude/settings.local.json
 .env
+
+# Worktrees Claude Code et journal des hooks MCP
+.claude/worktrees/
+data/journal-mcp.log

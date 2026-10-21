@@ -27,6 +27,14 @@ pip install -e ".[dev]"
 
 Si PowerShell refuse d'exécuter `Activate.ps1`, autorisez les scripts pour la session en cours : `Set-ExecutionPolicy -Scope Process RemoteSigned`.
 
+## Plugin d'équipe
+
+Conventions d'API, garde-fous et accès MCP en lecture seule sont packagés dans le plugin `dossard-equipe` :
+
+```
+/plugin install dossard-equipe --marketplace KevinDebeil/dossard
+```
+
 ## Commandes
 
 ```bash
